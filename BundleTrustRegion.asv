@@ -35,7 +35,6 @@ end
 
 TrustRegionFunctionCalls = functionCalls
 TrustRegionSubgradientCalls = sgradCalls
-
 consecutive = 0;
 %run main loop
 while k < maxIter

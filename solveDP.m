@@ -1,4 +1,4 @@
-function [v, d, beta] = solveDP(t, Bundle, Alphas)
+function [v, d, beta] = solveDP(t, Bundle, Alphas, tol)
     dimensionOfBeta = length(Alphas);
     A = [];
     b = [];
@@ -10,7 +10,7 @@ function [v, d, beta] = solveDP(t, Bundle, Alphas)
     %Start Value
     startValue = repmat(1/dimensionOfBeta,dimensionOfBeta,1);
     
-    options = optimoptions('fmincon','Algorithm','active-set', 'TolCon', 1e-12, 'TolFun', 1e-12, 'Display', 'off');
+    options = optimoptions('fmincon','Algorithm','active-set', 'TolCon', tol, 'TolFun', tol, 'Display', 'off');
     beta = fmincon(@QP_Problem, startValue, A, b, Aeq, beq, lb, ub, [], options);
    
     %Convert to solution of QP

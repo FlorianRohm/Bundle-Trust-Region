@@ -32,10 +32,10 @@ bundle_parameters = [bundle_m1 bundle_m2 bundle_m3 bundle_epsilonLow bundle_eta 
 
 x0 = [4 5]';
 %tr_tic = tic;
-%[tr_xStar, tr_Xs, tr_advanceSteps, tr_nullSteps] = BundleTrustRegion(@wolfe, x0, tr_parameters);
+[tr_xStar, tr_Xs, tr_advanceSteps, tr_nullSteps] = BundleTrustRegion(@wolfe, x0, tr_parameters);
 %toc(tr_tic);
-%TrustRegionFunctionCalls = functionCalls
-%TrustRegionSubgradientCalls = sgradCalls
+TrustRegionFunctionCalls = functionCalls
+TrustRegionSubgradientCalls = sgradCalls
 
 
 functionCalls = 0;
@@ -51,15 +51,15 @@ sgradCalls = 0;
 %BundleSubgradientCalls = sgradCalls
 
 %Analysis
-%ErrorOfTrustRegion = tr_xStar - [-1;0]
+ErrorOfTrustRegion = tr_xStar - [-1;0]
 %ErrorOfBundle = bundle_xStar - [-1;0]
 
 
 
 %Plotting
 
-%tr_PointX = tr_Xs(1,:);
-%tr_PointY = tr_Xs(2,:);
+tr_PointX = tr_Xs(1,:);
+tr_PointY = tr_Xs(2,:);
 
 %bundle_PointX = bundle_Xs(1,:);
 %bundle_PointY = bundle_Xs(2,:);
@@ -70,6 +70,6 @@ z = wolfe(x,y);
 
 contour(x,y,z,30);
 hold on;
-%plot(tr_PointX, tr_PointY, 'Color', 'green');
+plot(tr_PointX, tr_PointY, 'Color', 'green');
 %plot(bundle_PointX, bundle_PointY, 'Color', 'red');
 hold off;
