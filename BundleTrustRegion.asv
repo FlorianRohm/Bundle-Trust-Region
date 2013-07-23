@@ -27,18 +27,16 @@ alphakTildeMinus1 = 0;
 maxIter = 300;
 
 
-[ tkMinus1, xPlus, sPlus, alphaPlus, outcome, fxdMinusfx ] = Schrittweite622( funct, xk, -s1, [T*m3 m1 m2] );
-[Bundle, Alphas] = UpdateBundlePlus (Bundle, Alphas, outcome, fxdMinusfx, -tkMinus1*s1, sPlus, alphaPlus);
+[ tk, xPlus, sPlus, alphaPlus, outcome, fxdMinusfx ] = Schrittweite622( funct, xk, -s1, [T*m3 m1 m2] );
+[Bundle, Alphas] = UpdateBundlePlus (Bundle, Alphas, outcome, fxdMinusfx, -tk*s1, sPlus, alphaPlus);
 if outcome == 1
     xk = xPlus;
 end
 
-TrustRegionFunctionCalls = functionCalls
-TrustRegionSubgradientCalls = sgradCalls
 consecutive = 0;
 %run main loop
 while k < maxIter
-    [ tk, ~, dt, skTilde, alphakTilde, skPlus, alphakPlus, outcome, fxdMinusfx ] = Verfahren842( funct, xk, tkMinus1, Bundle, Alphas, skTildeMinus1, alphakTildeMinus1, params );
+    [ tk, vk, dt, skTilde, alphakTilde, skPlus, alphakPlus, outcome, fxdMinusfx ] = Verfahren842( funct, xk, tk, Bundle, Alphas, skTildeMinus1, alphakTildeMinus1, params );
     if outcome == 0
         xStar = xk;
         break;
@@ -55,12 +53,12 @@ while k < maxIter
         nsCounter = nsCounter + 1;
     end
     
+    tk = UpdateTK(tk, consecutive, fxdMinusfx, vk);
     
     %update Bundle
     [ Bundle, Alphas ] = UpdateBundleFull(Bundle, Alphas, outcome, maxBundleSize, fxdMinusfx, dt, skTilde, alphakTilde, skPlus, alphakPlus);
 
     xk = xkPlus;
-    tkMinus1 = tk;
     skTildeMinus1 = skTilde;
     alphakTildeMinus1 = alphakTilde;
     k = k+1;
@@ -68,13 +66,24 @@ while k < maxIter
     Xs(:,k) = xk;
 end
 
+    function tNew = UpdateTK(tOld, consecutive, diff, v)
+       tNew = tOld;
+       if (diff <= 0.7*v) || consecutive == 3
+           tNew = 5*tOld;
+       else
+           if consecutive < -3
+               tNew = 0.4*tOld;
+           end
+       end
+           
+       
+    end
+
     function nullschritte = UpdateConsecutiveInDescend(nullschritte)
         if nullschritte < 0
             nullschritte = -nullschritte
             nullschritte = 1;
             
-            TrustRegionFunctionCalls = functionCalls
-            TrustRegionSubgradientCalls = sgradCalls
         else
             nullschritte = nullschritte + 1;
         end
@@ -85,13 +94,11 @@ end
             abstiegsschritte
             abstiegsschritte = -1;
             
-            TrustRegionFunctionCalls = functionCalls
-            TrustRegionSubgradientCalls = sgradCalls
         else
             abstiegsschritte = abstiegsschritte - 1;
         end
     end
-
+    
 
 end
 

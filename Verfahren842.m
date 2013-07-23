@@ -21,7 +21,7 @@ tauJ = tkMinus1;
 while j < maxIter
     j = j+1;
     %Step1
-    [vTauJ, dTauJ, betaTauJ] = solveDP(tauJ, Bundle, Alphas, 1e-6);
+    [vTauJ, dTauJ, betaTauJ] = solveDP(tauJ, Bundle, Alphas, 1e-8);
     
     fxd = funct(xk + dTauJ);
     fxdMinusfx = fxd - fx;
