@@ -12,7 +12,6 @@ global functionCalls;
 global sgradCalls;
 
 %Helpers
-
 k = 1;
 Xs(:,k) = xk;
 nsCounter = 0;
@@ -42,18 +41,17 @@ while k < maxIter
         break;
     end
     
-    if outcome == 1
+    if outcome == 1 %step was a descendand step
         xkPlus = xk + dt;
         asCounter = asCounter + 1;
         consecutive = UpdateConsecutiveInDescend(consecutive);
-    else
+    else %step was null step
         xkPlus = xk;
-        
         consecutive = UpdateConsecutiveInNulls(consecutive);
         nsCounter = nsCounter + 1;
     end
     
-    tk = UpdateTK(tk, consecutive, fxdMinusfx, vk);
+    tk = GetNewTk(tk, consecutive, fxdMinusfx, vk);
     
     %update Bundle
     [ Bundle, Alphas ] = UpdateBundleFull(Bundle, Alphas, outcome, maxBundleSize, fxdMinusfx, dt, skTilde, alphakTilde, skPlus, alphakPlus);
@@ -66,14 +64,14 @@ while k < maxIter
     Xs(:,k) = xk;
 end
 
-    function tNew = UpdateTK(tOld, consecutive, diff, v)
+    function tNew = GetNewTk(tOld, consecutive, diff, v)
        
-        tNew = tOld;
+       tNew = tOld;
        if (diff <= 0.7*v) || consecutive >= 3
-           tNew = 4*tOld;
+           tNew = 3.2*tOld;
        else
            if consecutive <= -3
-               tNew = 0.3*tOld;
+               tNew = 0.2*tOld;
            end
        end
        
@@ -82,10 +80,9 @@ end
     end
 
     function nullschritte = UpdateConsecutiveInDescend(nullschritte)
-        if nullschritte < 0
-            nullschritte = -nullschritte
+        if nullschritte < 0 %we get a descend
+            fprintf('Aufeinanderfolgende Nullschritte:     %d\n', -nullschritte);
             nullschritte = 1;
-            
         else
             nullschritte = nullschritte + 1;
         end
@@ -93,7 +90,7 @@ end
 
     function abstiegsschritte = UpdateConsecutiveInNulls(abstiegsschritte)
         if abstiegsschritte > 0
-            abstiegsschritte
+            fprintf('Aufeinanderfolgende Absteigsschritte: %d\n', abstiegsschritte);
             abstiegsschritte = -1;
             
         else

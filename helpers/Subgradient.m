@@ -3,7 +3,7 @@ function subgradient = Subgradient(funct, xToEvaluate)
 % Needs 2*dimension function calls
 % Adopted from http://www.matrixlab-examples.com/gradient.html
 
-delta = 1e-12;
+delta = 1e-6*xToEvaluate;
 
 global functionCalls;
 global sgradCalls;
@@ -11,16 +11,18 @@ global sgradCalls;
 subgradient = zeros(length(xToEvaluate),1);
 
 for i = 1 : length(xToEvaluate)
-    deltaX = xToEvaluate;                     
-    
-    deltaX(i) = xToEvaluate(i) + delta;
-    f1 = funct( deltaX );
-    
-    deltaX(i) = xToEvaluate(i) - delta;
-    f2 = funct( deltaX );      
-    
-    subgradient(i,1) = (f1 - f2) / (2 * delta);  
+     if xToEvaluate(i) == 0
+        delta(i) = 1e-12;       
+    end
+     deltaX = xToEvaluate;                     
 
+     deltaX(i) = xToEvaluate(i) + delta(i);
+     f1 = funct( deltaX );
+
+     deltaX(i) = xToEvaluate(i) - delta(i);
+     f2 = funct( deltaX );      
+
+    subgradient(i,1) = (f1 - f2) / (2 * delta(i));  
     functionCalls = functionCalls - 2;
 end
 
