@@ -7,6 +7,8 @@ m2 = params(2);
 m3 = params(3);
 T = params(5);
 maxBundleSize = params(8);
+manualTk = params(9);
+
 
 global functionCalls;
 global sgradCalls;
@@ -25,12 +27,18 @@ skTildeMinus1 = s1;
 alphakTildeMinus1 = 0;
 maxIter = 300;
 
-
-[ tk, xPlus, sPlus, alphaPlus, outcome, fxdMinusfx ] = Schrittweite622( funct, xk, -s1, [T*m3 m1 m2] );
-[Bundle, Alphas] = UpdateBundlePlus (Bundle, Alphas, outcome, fxdMinusfx, -tk*s1, sPlus, alphaPlus);
-if outcome == 1
-    xk = xPlus;
+if manualTk == 0    
+    [ tk, xPlus, sPlus, alphaPlus, outcome, fxdMinusfx ] = Schrittweite622( funct, xk, -s1, [T*m3 m1 m2] );
+    [Bundle, Alphas] = UpdateBundlePlus (Bundle, Alphas, outcome, fxdMinusfx, -tk*s1, sPlus, alphaPlus);
+    if outcome == 1
+       xk = xPlus;
+    end
+else
+   tk = manualTk;
 end
+
+fprintf('Funktionsaufrufe vor Hauptschleife:          %d\n', functionCalls);
+fprintf('Subgradientenauswertungen vor Hauptschleife: %d\n\n', sgradCalls);
 
 consecutive = 0;
 %run main loop
@@ -74,8 +82,6 @@ end
                tNew = 0.2*tOld;
            end
        end
-       
-           
        
     end
 

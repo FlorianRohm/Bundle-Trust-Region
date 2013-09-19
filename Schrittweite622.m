@@ -16,8 +16,9 @@ tauLow = 0;
 tauHigh = Inf;
 tauJ = 1;
 j=0;
+maxIter = 30;
 
-while j < 50
+while j < maxIter
     %LS1
     xPlus = x + tauJ*d;
     
@@ -53,6 +54,7 @@ while j < 50
         end
     end
     
+fprintf('Tauj: %.3e\n', tauJ);
     %LS5
     j=j+1;
     

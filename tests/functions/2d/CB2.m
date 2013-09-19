@@ -1,6 +1,7 @@
 function [ z ] = CB2( x,varargin )
-%start at (1,-.1)
-%optimum at (1.1390,0.8996)
+%CB2 function to test Bundle Trust Region, 2D
+%   Recommendet start point: (1,-.1)
+%   optimum -1.952 at (1.1390,0.8996)
 
 global functionCalls;
 functionCalls = functionCalls + 1;
@@ -14,7 +15,7 @@ else
 end
 anOne = ones(size(x));
 
-z = max(x.^2 + y.^4 , (anOne-x).^2 + (anOne-y).^2 );
+z = max(x.^2 + y.^4 , (2*anOne-x).^2 + (2*anOne-y).^2 );
 z = max(z, 2*exp(-x+y));
 end
 
