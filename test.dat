@@ -1,0 +1,178 @@
+      PROGRAM btwolfe
+C
+      INTEGER N,RESET,LWORK
+      PARAMETER( N     =   2,
+     *           RESET =   7,
+     *           LWORK = (RESET+N+9)*RESET+4*N+10)
+C
+      INTEGER          IPRINT,MAXCOM,MAXIT,IFAIL,IOUT
+      DOUBLE PRECISION F,EPS,FM
+C
+      INTEGER          IWORK(RESET)
+      DOUBLE PRECISION X(N), G(N), WORK(LWORK)
+C
+      EXTERNAL         COMPFG
+C
+      X(1)= 5.0D0
+      X(2)= 4.0D0
+C
+      MAXCOM= 1000
+      MAXIT = 500
+      IPRINT= 2
+      EPS   = 1D-8
+      FM    = 0D0
+C
+      CALL COMPFG(N,X,F,G)
+C
+      WRITE(*,*)
+      WRITE(*,*) 'BT - convex'
+      WRITE(*,*) '==========='
+      WRITE(*,*)
+      WRITE(*,*) 'Wolfe, dimension=2'
+      WRITE(*,*) '=================='
+      WRITE(*,*)
+      WRITE(*,*) 'starting value:', F
+      WRITE(*,*)
+      WRITE(*,*) 'optimal value ca. -8'
+      WRITE(*,*)
+C
+      IOUT=7
+      OPEN(IOUT,FILE='iter.out',STATUS='NEW')
+      CALL BT (N,X,F,G,COMPFG,FM,EPS,MAXCOM,MAXIT,RESET,
+     *         IPRINT,IFAIL,IWORK,WORK,LWORK,IOUT)
+C
+      CLOSE(IOUT)
+      WRITE(*,*)
+      WRITE(*,*)
+     *        'number of iterations                      : ',MAXIT
+      WRITE(*,*)
+     *        'number of function/subgradient-evaluations: ',MAXCOM
+      WRITE(*,*) 'ifail:',IFAIL
+      WRITE(*,*)
+      WRITE(*,'(A)') ' solution x = '
+      WRITE(*,'(2E16.8)') X
+      WRITE(*,'(A,E16.8)') ' optimal value f(x) = ', F
+      END
+C===================================================================
+      SUBROUTINE COMPFG(N,X,F,G)
+C     Wolfe
+C
+      INTEGER          N
+      DOUBLE PRECISION F
+      DOUBLE PRECISION X(N),G(N)
+C
+      DOUBLE PRECISION GH
+C
+      IF (X(1) .GE. ABS(X(2))) THEN
+         F= 5.0D0*DSQRT(9.0D0*X(1)**2+16.0D0*X(2)**2)
+      ELSEIF (X(1) .GT. 0) THEN
+         F= 9.0D0*X(1)+16.0D0*DABS(X(2))
+      ELSE
+         F= 9.0D0*X(1)+16.0D0*DABS(X(2))-X(1)**9
+      ENDIF
+C
+      IF (X(1) .GE. DABS(X(2))) THEN
+         GH= 2.5D0/(DSQRT(9.0D0*X(1)**2+16.0D0*X(2)**2))
+         G(1)= 18.0D0*X(1)*GH
+         G(2)= 32.0D0*X(2)*GH
+      ELSEIF (X(1) .GT. 0) THEN
+         G(1)=9.0D0
+         IF (X(2) .GE. 0.0D0) THEN
+            G(2)= 16.0D0
+         ELSE
+            G(2)=-16.0D0
+         ENDIF
+      ELSE
+         G(1)= 9.0D0-9.0D0*X(1)**8
+         IF (X(2) .GE. 0.0D0) THEN
+            G(2)= 16.0D0
+         ELSE
+            G(2)=-16.0D0
+         ENDIF
+      ENDIF
+      END
+
+ BT - convex
+ ===========
+
+ Wolfe, dimension=2
+ ==================
+
+ starting value:   109.65856099730654     
+
+ optimal value ca. -8
+
+
+ BT-Algorithm
+ ============
+
+ workspace provided is    WORK(         144 )
+ to solve problem we need WORK(         144 )
+
+   niter  ncomp        f                gn             alpha
+     1      1   0.10965856E+03   0.17836460E+02   0.00000000E+00
+     2      6   0.56573486E+02   0.11999766E+02   0.32385779E+02
+     3     12   0.35548245E+02   0.60347736E+01   0.30988498E+02
+     4     13  -0.67327740E+01   0.74758293E-01   0.21642451E+01
+     5     14  -0.72060770E+01   0.53161228E-01   0.15737130E+01
+     6     15  -0.74595865E+01   0.16915462E-01   0.66286472E+00
+     7     16  -0.77890028E+01   0.40042920E-02   0.29740037E+00
+
+ Reset, nn=           3
+
+     8     20  -0.79927891E+01   0.19131175E-05   0.46905312E-01
+     9     21  -0.79927891E+01   0.16516088E-04   0.24940170E-01
+    10     22  -0.79955982E+01   0.45133547E-06   0.11065726E-01
+    11     23  -0.79955982E+01   0.80139442E-05   0.10029670E-01
+
+ Reset, nn=           3
+
+    12     24  -0.79999333E+01   0.41925884E-05   0.51534885E-02
+    13     25  -0.79999333E+01   0.20475936E-05   0.17196602E-02
+    14     26  -0.79999333E+01   0.10348634E-05   0.20239842E-03
+    15     27  -0.79999333E+01   0.10290328E-05   0.16582637E-03
+
+ Reset, nn=           3
+
+    16     28  -0.79999333E+01   0.25654830E-05   0.14768667E-03
+    17     29  -0.79999333E+01   0.12856837E-05   0.79562772E-04
+    18     30  -0.79999782E+01   0.64063313E-06   0.34142238E-04
+    19     31  -0.79999954E+01   0.69233448E-09   0.84872307E-05
+
+ Reset, nn=           3
+
+    20     32  -0.79999954E+01   0.32013163E-06   0.61516343E-05
+    21     33  -0.79999994E+01   0.16011182E-06   0.11686962E-05
+    22     34  -0.80000000E+01   0.22115677E-10   0.27071083E-06
+    23     35  -0.80000000E+01   0.80023159E-07   0.42838004E-07
+
+ Reset, nn=           3
+
+    24     36  -0.80000000E+01   0.80023159E-07   0.42838004E-07
+    25     37  -0.80000000E+01   0.80034685E-07   0.21422425E-07
+    26     38  -0.80000000E+01   0.80034685E-07   0.21422425E-07
+    27     39  -0.80000000E+01   0.80034685E-07   0.21422425E-07
+
+ Reset, nn=           3
+
+    28     40  -0.80000000E+01   0.16006369E-06   0.21419971E-07
+    29     41  -0.80000000E+01   0.16006369E-06   0.21419971E-07
+    30     42  -0.80000000E+01   0.16006369E-06   0.21419971E-07
+    31     43  -0.80000000E+01   0.16008416E-06   0.10712147E-07
+
+ Reset, nn=           3
+
+    32     44  -0.80000000E+01   0.80016913E-07   0.53558316E-08
+    33     45  -0.80000000E+01   0.40018073E-07   0.36683917E-08
+    34     46  -0.80000000E+01   0.20500125E-10   0.44958190E-08
+
+ convergence
+
+
+ number of iterations                      :           34
+ number of function/subgradient-evaluations:           46
+ ifail:           0
+
+ solution x = 
+ -0.10000056E+01 -0.54914406E-13
+ optimal value f(x) =  -0.80000000E+01
