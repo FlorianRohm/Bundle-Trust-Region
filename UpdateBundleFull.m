@@ -12,7 +12,7 @@ tooMuch = sizeAfterUpdate - maxBundleSize;
 
 if tooMuch >= 1
     switch update
-        case 'greatest error'
+        case 'largest error'
            [~,index] = max(Alphas);
            Bundle(:,index) = [];
            Alphas(index) = [];

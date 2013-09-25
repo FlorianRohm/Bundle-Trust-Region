@@ -2,7 +2,7 @@ classdef RosenSuzuki2 < aFunction
     
     properties (Constant)
         startPoint = [0 ; 0];
-        optimalPoint = [0; 1];
+        optimalPoint = [1.1707;1.7402];
         optimalValue = -44;
         name = 'Rosen/Suzuki2';
     end

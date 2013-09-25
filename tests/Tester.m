@@ -1,48 +1,49 @@
 function [Xs,FXs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistoryFiber, funcCalls, subgradCalls] = ...
-    Tester( functionObject, parameterObject )
+    Tester( functionObject, parameterObject , outputPropertiesObj)
 %Tester Tests the given function with Bundle Trust Region
 %functions should increment functionCalls Variable
 
 fprintf('------------------- Untersuche Funktion: %s -------------------\n\n',functionObject.name);
 
-[xStar, Xs,FXs, advanceSteps, nullSteps] = BundleTrustRegion(functionObject, parameterObject);
+[xStar, Xs,FXs, advanceSteps, nullSteps] = BundleTrustRegion(functionObject, parameterObject, outputPropertiesObj);
 
-fprintf(strcat('\nStartpunkt:',Vector2String(functionObject.startPoint, '%.4f'), '\n' ));
-fprintf(strcat('Endpunkt:  ',Vector2String(xStar, '%.4f'), '\n\n' ));
+funcCalls = functionObject.functionCalls;
+subgradCalls = functionObject.subgradientCalls;
 
 error = xStar - functionObject.optimalPoint;
-
-fprintf(strcat('Fehler:  ',Vector2String(error, '%.4e'), '\n' ));
-fprintf('Fehlernorm: %.3e\n', norm(error) );
-
 errorValue = functionObject.getValueAt(xStar) - functionObject.optimalValue;
-
-fprintf('Fehlernorm der Funktionswerte: %.3e\n', norm(errorValue) );
-
 subgradientAtxStar = functionObject.getSubgradientAt(xStar);
-
-fprintf(strcat('Ein Subgradient im approx. Optimum: ',Vector2String(subgradientAtxStar, '%.4f'), '\n\n' ));
-
-fprintf('Funktionsaufrufe:          %d\n', functionObject.functionCalls-1);
-fprintf('Subgradientenauswertungen: %d\n\n', functionObject.subgradientCalls);
-
-fprintf('Abstiegsschritte gesamt:   %d\n', advanceSteps);
-fprintf('Nullschritte gesamt:       %d\n\n', nullSteps);
-
-funcCalls = functionObject.functionCalls-1;
-subgradCalls = functionObject.subgradientCalls;
 
 errorHistoryFiber = sqrt(sum(Xs.^2,1));
 errorHistoryFiber = abs(errorHistoryFiber - norm(functionObject.optimalPoint));
-
-figure('Name',['Fehlerverlauf im Urbild bei ', functionObject.name],'NumberTitle','off')
-semilogy(errorHistoryFiber,'-*');
-
 errorHistoryValue = sqrt(sum(FXs.^2,1));
 errorHistoryValue = abs(errorHistoryValue - norm(functionObject.optimalValue));
 
-figure('Name',['Fehlerverlauf der Funktionswerte bei ', functionObject.name],'NumberTitle','off')
-semilogy(errorHistoryValue,'-*');
+if outputPropertiesObj.printAnalysis
+    fprintf(strcat('\nStartpunkt:',Vector2String(functionObject.startPoint, '%.4f'), '\n' ));
+    fprintf(strcat('Endpunkt:  ',Vector2String(xStar, '%.4f'), '\n\n' ));
+
+    fprintf(strcat('Fehler:  ',Vector2String(error, '%.4e'), '\n' ));
+    fprintf('Fehlernorm: %.3e\n', norm(error) );
+    fprintf('Fehlernorm der Funktionswerte: %.3e\n', norm(errorValue) );
+    fprintf(strcat('Ein Subgradient im approx. Optimum: ',Vector2String(subgradientAtxStar, '%.4f'), '\n\n' ));
+
+    fprintf('Funktionsaufrufe:          %d\n', funcCalls);
+    fprintf('Subgradientenauswertungen: %d\n\n', subgradCalls);
+
+    fprintf('Abstiegsschritte gesamt:   %d\n', advanceSteps);
+    fprintf('Nullschritte gesamt:       %d\n\n', nullSteps);
+end
+
+if outputPropertiesObj.errorInFiber
+    figure('Name',['Fehlerverlauf im Urbild bei ', functionObject.name],'NumberTitle','off')
+    semilogy(errorHistoryFiber,'-*');
+end
+
+if outputPropertiesObj.errorInValue
+    figure('Name',['Fehlerverlauf der Funktionswerte bei ', functionObject.name],'NumberTitle','off')
+    semilogy(errorHistoryValue,'-*');
+end
 
 
 end

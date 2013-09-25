@@ -1,5 +1,5 @@
 function [ xStar, Xs,FXs, asCounter, nsCounter ] = ...
-    BundleTrustRegion( functionObject, parameterObject )
+    BundleTrustRegion( functionObject, parameterObject, outputPropertiesObj )
 %BundleTrustRegion A Bundle Trust Region Algorithm to find the minimum of a
 %nonsmooth, convex function
 
@@ -29,7 +29,7 @@ if parameterObject.manualTk == 0
                          -s1, ...
                          [parameterObject.T*parameterObject.m3, ...
                          parameterObject.m1 ... 
-                         parameterObject.m2] );
+                         parameterObject.m2], outputPropertiesObj );
     [Bundle, Alphas] = ...
         UpdateBundlePlus (Bundle, ...
                           Alphas, ...
@@ -82,10 +82,12 @@ while k < maxIter
     Xs(:,k) = xk;
     FXs(1,k) = fx;
 end
-if consecutive <0
-    fprintf('Aufeinanderfolgende Nullschritte:     %d\n', -consecutive);
-else
-    fprintf('Aufeinanderfolgende Absteigsschritte: %d\n', consecutive);
+if outputPropertiesObj.printConsecutive
+    if consecutive <0
+        fprintf('Aufeinanderfolgende Nullschritte:     %d\n', -consecutive);
+    else
+        fprintf('Aufeinanderfolgende Absteigsschritte: %d\n', consecutive);
+    end
 end
 
     function tNew = GetNewTk(tOld, consecutive, diff, v)
@@ -101,7 +103,9 @@ end
 
     function nullschritte = UpdateConsecutiveInDescend(nullschritte)
         if nullschritte < 0 %we get a descend
-            fprintf('Aufeinanderfolgende Nullschritte:     %d\n', -nullschritte);
+            if outputPropertiesObj.printConsecutive
+                fprintf('Aufeinanderfolgende Nullschritte:     %d\n', -nullschritte);
+            end
             nullschritte = 1;
         else
             nullschritte = nullschritte + 1;
@@ -110,7 +114,9 @@ end
 
     function abstiegsschritte = UpdateConsecutiveInNulls(abstiegsschritte)
         if abstiegsschritte > 0
-            fprintf('Aufeinanderfolgende Absteigsschritte: %d\n', abstiegsschritte);
+            if outputPropertiesObj.printConsecutive
+                fprintf('Aufeinanderfolgende Absteigsschritte: %d\n', abstiegsschritte);
+            end
             abstiegsschritte = -1;
             
         else

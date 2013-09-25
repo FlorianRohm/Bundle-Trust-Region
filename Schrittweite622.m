@@ -1,4 +1,4 @@
-function [ tauJ, xPlus, sPlus, alphaPlus, outcome, fxdMinusfx ] = Schrittweite622( functionObject, x, d, params )
+function [ tauJ, xPlus, sPlus, alphaPlus, outcome, fxdMinusfx ] = Schrittweite622( functionObject, x, d, params, outputPropertiesObj )
 
     %Page 111
 
@@ -55,8 +55,9 @@ while j < maxIter
             tauJ = Interpol(tauLow, tauHigh);
         end
     end
-    
-fprintf('Tauj: %.3e\n', tauJ);
+    if outputPropertiesObj.showTauJ
+        fprintf('Tauj: %.3e\n', tauJ);
+    end
     %LS5
     j=j+1;
     

@@ -1,10 +1,10 @@
 function [Xs, FXs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistory, funcCalls, subgradCalls] = ...
-    Tester2D( functionObject, parameterObject, meshX, meshY )
+    Tester2D( functionObject, parameterObject, meshX, meshY, outputPropertiesObj )
 %Tester Tests the given function with Bundle Trust Region
 %functions should increment functionCalls Variable
 
 [Xs, FXs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistory, funcCalls, subgradCalls] = ...
-   Tester ( functionObject, parameterObject );
+   Tester ( functionObject, parameterObject, outputPropertiesObj);
 
 figure('Name',['Plot für ', functionObject.name ' Funktion'],'NumberTitle','off')
 z = functionObject.getValueForPlot(meshX,meshY);
