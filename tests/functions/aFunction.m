@@ -13,5 +13,6 @@ classdef aFunction < handle
     methods (Abstract)
         getValueAt(obj, x);
         getSubgradientAt(obj, x);
+        resetCounters(obj);
     end
 end

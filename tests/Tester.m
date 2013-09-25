@@ -1,11 +1,11 @@
-function [Xs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistory, funcCalls, subgradCalls] = ...
+function [Xs,FXs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistoryFiber, funcCalls, subgradCalls] = ...
     Tester( functionObject, parameterObject )
 %Tester Tests the given function with Bundle Trust Region
 %functions should increment functionCalls Variable
 
 fprintf('------------------- Untersuche Funktion: %s -------------------\n\n',functionObject.name);
 
-[xStar, Xs, advanceSteps, nullSteps] = BundleTrustRegion(functionObject, parameterObject);
+[xStar, Xs,FXs, advanceSteps, nullSteps] = BundleTrustRegion(functionObject, parameterObject);
 
 fprintf(strcat('\nStartpunkt:',Vector2String(functionObject.startPoint, '%.4f'), '\n' ));
 fprintf(strcat('Endpunkt:  ',Vector2String(xStar, '%.4f'), '\n\n' ));
@@ -32,11 +32,17 @@ fprintf('Nullschritte gesamt:       %d\n\n', nullSteps);
 funcCalls = functionObject.functionCalls-1;
 subgradCalls = functionObject.subgradientCalls;
 
-errorHistory = sqrt(sum(Xs.^2,1));
-errorHistory = abs(errorHistory - norm(functionObject.optimalPoint));
+errorHistoryFiber = sqrt(sum(Xs.^2,1));
+errorHistoryFiber = abs(errorHistoryFiber - norm(functionObject.optimalPoint));
 
+figure('Name',['Fehlerverlauf im Urbild bei ', functionObject.name],'NumberTitle','off')
+semilogy(errorHistoryFiber,'-*');
 
-figure('Name',strcat('Fehlerverlauf bei ', functionObject.name),'NumberTitle','off')
-semilogy(errorHistory,'-*');
+errorHistoryValue = sqrt(sum(FXs.^2,1));
+errorHistoryValue = abs(errorHistoryValue - norm(functionObject.optimalValue));
+
+figure('Name',['Fehlerverlauf der Funktionswerte bei ', functionObject.name],'NumberTitle','off')
+semilogy(errorHistoryValue,'-*');
+
 
 end

@@ -1,4 +1,4 @@
-function [ xStar, Xs, asCounter, nsCounter ] = ...
+function [ xStar, Xs,FXs, asCounter, nsCounter ] = ...
     BundleTrustRegion( functionObject, parameterObject )
 %BundleTrustRegion A Bundle Trust Region Algorithm to find the minimum of a
 %nonsmooth, convex function
@@ -7,6 +7,9 @@ function [ xStar, Xs, asCounter, nsCounter ] = ...
 %Helpers
 k = 1;
 Xs(:,k) = functionObject.startPoint;
+FXs(1,k) = functionObject.getValueAt(functionObject.startPoint);
+functionObject.resetCounter();
+
 nsCounter = 0;
 asCounter = 0;
 
@@ -48,7 +51,7 @@ fprintf('Subgradientenauswertungen vor Hauptschleife: %d\n\n', functionObject.su
 consecutive = 0;
 %run main loop
 while k < maxIter
-    [ tk, vk, dt, skTilde, alphakTilde, skPlus, alphakPlus, outcome, fxdMinusfx ] = ...
+    [ tk, vk, dt, skTilde, alphakTilde, skPlus, alphakPlus, outcome, fxdMinusfx, fx ] = ...
         Verfahren842( functionObject, xk, tk, Bundle, Alphas, skTildeMinus1, alphakTildeMinus1, parameterObject );
     if outcome == 0
         xStar = xk;
@@ -77,6 +80,7 @@ while k < maxIter
     k = k+1;
     xStar = xk;
     Xs(:,k) = xk;
+    FXs(1,k) = fx;
 end
 if consecutive <0
     fprintf('Aufeinanderfolgende Nullschritte:     %d\n', -consecutive);

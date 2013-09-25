@@ -37,12 +37,16 @@ classdef RosenSuzuki2 < aFunction
             value = max(f1,max(f1 + 10*f2, max(f1 + 10*f3,f1 + 10*f4)));
         end
         
-        
         function value = getSubgradientAt(obj, x)
             obj.subgradientCalls = obj.subgradientCalls + 1;
             reset = obj.functionCalls;
             value = Subgradient(@obj.getValueAt, x);
             obj.functionCalls = reset;
-        end 
+        end
+        
+        function resetCounters(obj)
+            obj.functionCalls = 0;
+            obj.subgradientCalls = 0;
+        end    
     end
 end

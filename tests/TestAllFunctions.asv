@@ -32,13 +32,14 @@ end
 
 
 %---------------2D Section----------------
-[meshX,meshY] = meshgrid(0:0.01:2.5,-0.5:0.01:1.5);
-cb2 = CB2;
-Tester2D( cb2, parameterObj1, meshX, meshY );
+% [meshX,meshY] = meshgrid(0:0.01:2.5,-0.5:0.01:1.5);
+% cb2 = CB2;
+% Tester2D( cb2, parameterObj1, meshX, meshY );
+% 
+% [meshX,meshY] = meshgrid(-1.6:0.1:6,-5:0.1:5);
+% wolfe = Wolfe;
+% Tester2D( wolfe, parameterObj1, meshX, meshY );
 
-[meshX,meshY] = meshgrid(-1.6:0.1:6,-5:0.1:5);
-wolfe = Wolfe;
-Tester2D( wolfe, parameterObj1, meshX, meshY );
 
 [meshX,meshY] = meshgrid(-1:0.01:2,-1:0.01:3);
 rosenSuzuki2 = RosenSuzuki2;
@@ -47,15 +48,15 @@ Tester2D( rosenSuzuki2, parameterObj1, meshX, meshY);
 %------------Higher Dimensions------------
 rosenSuzuki = RosenSuzuki;
 Tester( rosenSuzuki, parameterObj1);
-
-maxq20 = Maxq20;
-Tester(maxq20, parameterObj1);
-
-maxl20 = Maxl20;
-Tester(maxl20, parameterObj1);
-
-hilbert50 = Hilbert50;
-Tester(hilbert50, parameterObj1);
-
-goffin50 = Goffin50;
-Tester(goffin50, parameterObj1);
+% 
+% maxq20 = Maxq20;
+% Tester(maxq20, parameterObj1);
+% 
+% maxl20 = Maxl20;
+% Tester(maxl20, parameterObj1);
+% 
+% hilbert50 = Hilbert50;
+% Tester(hilbert50, parameterObj1);
+% 
+% goffin50 = Goffin50;
+% Tester(goffin50, parameterObj1);

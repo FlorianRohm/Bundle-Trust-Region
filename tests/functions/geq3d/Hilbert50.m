@@ -26,6 +26,11 @@ classdef  Hilbert50 < aFunction
             reset = obj.functionCalls;
             value = Subgradient(@obj.getValueAt, x);
             obj.functionCalls = reset;
-        end 
+        end
+        
+        function resetCounters(obj)
+            obj.functionCalls = 0;
+            obj.subgradientCalls = 0;
+        end    
     end
 end

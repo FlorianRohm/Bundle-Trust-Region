@@ -13,5 +13,6 @@ classdef a2DFunction < aFunction
         getValueAt(obj, x);
         getValueForPlot(x,y);
         getSubgradientAt(obj, x);
+        resetCounters(obj);    
     end
 end

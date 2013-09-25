@@ -1,4 +1,4 @@
-function [ tk, vTauJ, dTauJ, skTilde, alphakTilde, skPlus, alphakPlus, outcome, fxdMinusfx ] = Verfahren842( functionObject, xk, tkMinus1, Bundle, Alphas, skTildeMinus1, alphakTildeMinus1, parameterObject )
+function [ tk, vTauJ, dTauJ, skTilde, alphakTilde, skPlus, alphakPlus, outcome, fxdMinusfx, fx ] = Verfahren842( functionObject, xk, tkMinus1, Bundle, Alphas, skTildeMinus1, alphakTildeMinus1, parameterObject )
 %Computes a trust region Parameter for Bundle Trust Region
 funct = @functionObject.getValueAt;
 fx = funct(xk);

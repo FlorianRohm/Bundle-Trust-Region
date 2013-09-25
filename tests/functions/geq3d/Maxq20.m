@@ -25,5 +25,10 @@ classdef  Maxq20 < aFunction
             value = Subgradient(@obj.getValueAt, x);
             obj.functionCalls = reset;
         end 
+        
+        function resetCounters(obj)
+            obj.functionCalls = 0;
+            obj.subgradientCalls = 0;
+        end    
     end
 end
