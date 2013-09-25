@@ -1,4 +1,4 @@
-function [Xs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistory, funcCalls, subgradCalls] = ...
+function [Xs, xStar, advanceSteps, nullSteps, error, errorValue, funcCalls, subgradCalls] = ...
     Tester( functionObject, parameterObject )
 %Tester Tests the given function with Bundle Trust Region
 %functions should increment functionCalls Variable
@@ -32,11 +32,7 @@ fprintf('Nullschritte gesamt:       %d\n\n', nullSteps);
 funcCalls = functionObject.functionCalls-1;
 subgradCalls = functionObject.subgradientCalls;
 
-errorHistory = sqrt(sum(Xs.^2,1));
-errorHistory = abs(errorHistory - norm(functionObject.optimalPoint));
-
-
-figure('Name',strcat('Fehlerverlauf bei ', functionObject.name),'NumberTitle','off')
-semilogy(errorHistory,'-*');
+errorHistory_tmp = (Xs.^2);
+errorHistory_tmp(1,:) + errorHistory_tmp(2,:) 
 
 end

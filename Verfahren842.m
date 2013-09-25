@@ -1,18 +1,9 @@
-function [ tk, vTauJ, dTauJ, skTilde, alphakTilde, skPlus, alphakPlus, outcome, fxdMinusfx ] = Verfahren842( funct, xk, tkMinus1, Bundle, Alphas, skTildeMinus1, alphakTildeMinus1, params )
+function [ tk, vTauJ, dTauJ, skTilde, alphakTilde, skPlus, alphakPlus, outcome, fxdMinusfx ] = Verfahren842( functionObject, xk, tkMinus1, Bundle, Alphas, skTildeMinus1, alphakTildeMinus1, parameterObject )
 %Computes a trust region Parameter for Bundle Trust Region
-
-
-m1 = params(1);
-m2 = params(2);
-m3 = params(3);
-eta = params(4);
-T = params(5);
-gammaI = params(6);
-thresholdT = params(7);
-
+funct = @functionObject.getValueAt;
 fx = funct(xk);
 tauLeft = 0;
-tauRight = T;
+tauRight = parameterObject.T;
 
 maxIter = 100;
 j=0;
@@ -27,7 +18,7 @@ while j < maxIter
     fxdMinusfx = fxd - fx;
     
     ykPlus = xk + dTauJ;
-    skPlus = Subgradient(funct, ykPlus);
+    skPlus = functionObject.getSubgradientAt(ykPlus);
 
     alphakTilde = Alphas * betaTauJ;
     skTilde = Bundle * betaTauJ;
@@ -53,10 +44,10 @@ while j < maxIter
             %Step4
             %tauJ too small, rise it
             tauLeft = tauJ;
-            if tauRight == T
-                tauJ = Extrapol(tauJ, T);
+            if tauRight == parameterObject.T
+                tauJ = Extrapol(tauJ, parameterObject.T);
             else
-                tauJ = Interpol(tauLeft, tauRight, gammaI);
+                tauJ = Interpol(tauLeft, tauRight, parameterObject.gammaI);
             end
             continue;
         end
@@ -74,25 +65,26 @@ while j < maxIter
     
     %Step6 tauJ was too big, lower it
     tauRight = tauJ;
-    tauJ = Interpol(tauLeft, tauRight, gammaI);
-    
+    tauJ = Interpol(tauLeft, tauRight, parameterObject.gammaI);
     
     outcome = -1; %maxiter equivalent to nullstep?
     tk = tauJ;
 end
-
+if j>3
+    fprintf('Innere Iteration nach %d Iterationen mit %.3e TrustRegion Parameter verlassen\n', j,tk);
+end
     function test814 = Abbruchkriterium814()
-        test814 = (alphakTilde <= eta) && (dot(skTilde, skTilde) <= eta*eta);
+        test814 = (alphakTilde <= parameterObject.eta) && (dot(skTilde, skTilde) <= parameterObject.eta*parameterObject.eta);
     end
 
     function test815 = Abstiegsbedingung815()
-        test815 =  fxd - fx< m1 * vTauJ;
+        test815 =  fxd - fx< parameterObject.m1 * vTauJ;
     end
     function test817 = Abstiegsbedingung817()
-        test817 = (dot(skPlus,dTauJ) >= m2 * vTauJ) || (tauJ >= T - thresholdT)  ;
+        test817 = (dot(skPlus,dTauJ) >= parameterObject.m2 * vTauJ) || (tauJ >= parameterObject.T - parameterObject.thresholdT)  ;
     end
     function test822 = Abstiegsbedingung822()
-        b1 = alphakPlus <= m3* alphakTilde;
+        b1 = alphakPlus <= parameterObject.m3* alphakTilde;
         b2 = -fxdMinusfx <= norm(skTildeMinus1) + alphakTildeMinus1;
         test822 = b1 || b2;
     end

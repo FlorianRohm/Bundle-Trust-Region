@@ -1,10 +1,12 @@
-function [ tauJ, xPlus, sPlus, alphaPlus, outcome, fxdMinusfx ] = Schrittweite622( funct, x, d, params )
+function [ tauJ, xPlus, sPlus, alphaPlus, outcome, fxdMinusfx ] = Schrittweite622( functionObject, x, d, params )
 
     %Page 111
 
 epsilonTilde = params(1);
 m1 = params(2);
 m2 = params(3);
+funct = @functionObject.getValueAt;
+
 
 %ToDo: what to do with v?
 v = DirectionalDerivative(funct,x,d);
@@ -26,7 +28,7 @@ while j < maxIter
     fxd = funct(xPlus);
     fxdMinusfx = fxd - fx;
     
-    sPlus = Subgradient (funct, xPlus);
+    sPlus = functionObject.getSubgradientAt(xPlus);
     alphaPlus = - fxdMinusfx + dot(sPlus, tauJ*d);
     
     %LS2

@@ -5,8 +5,6 @@ function subgradient = Subgradient(funct, xToEvaluate)
 
 delta = 1e-6*xToEvaluate;
 
-global functionCalls;
-global sgradCalls;
 %preallocating
 subgradient = zeros(length(xToEvaluate),1);
 
@@ -23,8 +21,6 @@ for i = 1 : length(xToEvaluate)
      f2 = funct( deltaX );      
 
     subgradient(i,1) = (f1 - f2) / (2 * delta(i));  
-    functionCalls = functionCalls - 2;
 end
 
-sgradCalls = sgradCalls + 1;
 end
