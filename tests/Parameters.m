@@ -10,6 +10,15 @@ classdef Parameters < handle
         thresholdT = 0.1
         maxBundleSize = 15
         manualTk = 0
-        bundleUpdate = 'greatest error'
+        bundleUpdate = 'fifo'
     end   
+    methods
+        function new = copy(this)
+            new = feval(class(this));
+            p = properties(this);
+            for i = 1:length(p)
+                new.(p{i}) = this.(p{i});
+            end
+        end
+    end
 end

@@ -44,15 +44,15 @@ if parameterObject.manualTk == 0
 else
    tk = parameterObject.manualTk;
 end
-
-fprintf('Funktionsaufrufe vor Hauptschleife:          %d\n', functionObject.functionCalls);
-fprintf('Subgradientenauswertungen vor Hauptschleife: %d\n\n', functionObject.subgradientCalls);
-
+if outputPropertiesObj.preMainLoop
+    fprintf('Funktionsaufrufe vor Hauptschleife:          %d\n', functionObject.functionCalls);
+    fprintf('Subgradientenauswertungen vor Hauptschleife: %d\n\n', functionObject.subgradientCalls);
+end
 consecutive = 0;
 %run main loop
 while k < maxIter
     [ tk, vk, dt, skTilde, alphakTilde, skPlus, alphakPlus, outcome, fxdMinusfx, fx ] = ...
-        Verfahren842( functionObject, xk, tk, Bundle, Alphas, skTildeMinus1, alphakTildeMinus1, parameterObject );
+        Verfahren842( functionObject, xk, tk, Bundle, Alphas, skTildeMinus1, alphakTildeMinus1, parameterObject, outputPropertiesObj );
     if outcome == 0
         xStar = xk;
         break;

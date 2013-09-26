@@ -1,10 +1,11 @@
-function [Xs,FXs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistoryFiber, funcCalls, subgradCalls] = ...
+function [Xs,FXs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistoryFiber, errorHistoryValue, funcCalls, subgradCalls] = ...
     Tester( functionObject, parameterObject , outputPropertiesObj)
 %Tester Tests the given function with Bundle Trust Region
 %functions should increment functionCalls Variable
 
-fprintf('------------------- Untersuche Funktion: %s -------------------\n\n',functionObject.name);
-
+if outputPropertiesObj.header
+    fprintf('------------------- Untersuche Funktion: %s -------------------\n\n',functionObject.name);
+end
 [xStar, Xs,FXs, advanceSteps, nullSteps] = BundleTrustRegion(functionObject, parameterObject, outputPropertiesObj);
 
 funcCalls = functionObject.functionCalls;
