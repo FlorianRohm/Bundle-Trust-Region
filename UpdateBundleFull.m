@@ -10,28 +10,49 @@ update = parameterObj.bundleUpdate;
 sizeAfterUpdate = currentSize + 2;
 tooMuch = sizeAfterUpdate - maxBundleSize;
 
+protected = 0;
+for i = currentSize:-1:1
+    if Alphas(i) == 0
+        protected = i;
+        break;
+    end
+end
+
+%Update of Alphas
+currentSize = size(Bundle);
+currentSize = currentSize(2);
+if outcome == -1
+    
+    Bundle(:,currentSize+1) = sTildeK;
+    Bundle(:,currentSize+2) = skPlus;
+    Alphas(currentSize+1) = alphaTildeK;
+    Alphas(currentSize+2) = alphakPlus;
+else
+    Bundle(:,currentSize+1) = sTildeK;
+    Alphas(currentSize+1) = alphaTildeK;
+    Alpha1 = repmat(fxdMinusfd,1,currentSize+1);
+    Alpha2 = -dt' * Bundle;
+    Alphas = Alphas + Alpha1 + Alpha2;
+    
+    Bundle(:,currentSize+2) = skPlus;
+    Alphas(currentSize+2) = 0;
+end
+
 if tooMuch >= 1
     switch update
         case 'largest error'
-           [~,index] = max(Alphas);
+           AValidToDelete = Alphas(1:currentSize);
+           [~,index] = max(AValidToDelete);
            Bundle(:,index) = [];
            Alphas(index) = [];
-           currentSize = currentSize-1;
+           AValidToDelete(index) = [];
            if tooMuch == 2
-               [~,index2] = max(Alphas);
+               [~,index2] = max(AValidToDelete);
                Bundle(:,index2) = [];
                Alphas(index2) = [];
-               currentSize = currentSize-1;
            end
 
         case 'fifo'
-            protected = 0;
-            for i = currentSize:-1:1
-                if Alphas(i) == 0
-                    protected = i;
-                    break;
-                end
-            end
             for i = 1:tooMuch
                 if 1 ~= protected
                     Bundle(:,1) = [];
@@ -41,28 +62,29 @@ if tooMuch >= 1
                     Alphas(2) = [];
                 end
             end
+        case 'random'
+            r = getNonProtectedInt(currentSize, protected);
+            
+            Bundle(:,r) = [];
+            Alphas(r) = [];
+            
+            if tooMuch == 2
+                r = getNonProtectedInt(currentSize-1, protected);
+            
+                Bundle(:,r) = [];
+                Alphas(r) = [];
+            end
         otherwise
             error('Update nicht unterstützt.');
     end
 end
 
-        
-
-%Update of Alphas
-Bundle(:,currentSize+1) = sTildeK;
-
-if outcome == -1
-    
-    Bundle(:,currentSize+2) = skPlus;
-    Alphas(currentSize+1) = alphaTildeK;
-    Alphas(currentSize+2) = alphakPlus;
-else
-    Alphas(currentSize+1) = alphaTildeK;
-    Alphas = Alphas + repmat(fxdMinusfd,1,currentSize+1) - dt' * Bundle;
-    
-    Bundle(:,currentSize+2) = skPlus;
-    Alphas(currentSize+2) = 0;
 end
 
+function r = getNonProtectedInt(max,protected)
+    r = randi(max,1);
+    while r == protected
+        r = randi(max,1);
+    end
 end
 

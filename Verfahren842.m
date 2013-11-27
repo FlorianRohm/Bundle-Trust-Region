@@ -2,17 +2,21 @@ function [ tk, vTauJ, dTauJ, skTilde, alphakTilde, skPlus, alphakPlus, outcome, 
 %Computes a trust region Parameter for Bundle Trust Region
 funct = @functionObject.getValueAt;
 fx = funct(xk);
-tauLeft = 0;
+tauLeft = parameterObject.minimalTrustRegion;
 tauRight = parameterObject.T;
+breakCondition = parameterObject.breakCondition;
+auxTol = parameterObject.auxTol;
+auxRound = parameterObject.auxRound;
 
 maxIter = 100;
 j=0;
 tauJ = tkMinus1;
 
+
 while j < maxIter
     j = j+1;
     %Step1
-    [vTauJ, dTauJ, betaTauJ] = solveDP(tauJ, Bundle, Alphas, 1e-8);
+    [vTauJ, dTauJ, betaTauJ] = solveDP(tauJ, Bundle, Alphas, auxTol, auxRound);
     
     fxd = funct(xk + dTauJ);
     fxdMinusfx = fxd - fx;
@@ -22,13 +26,16 @@ while j < maxIter
 
     alphakTilde = Alphas * betaTauJ;
     skTilde = Bundle * betaTauJ;
+    
+    if outputPropertiesObj.indicateNegativeAlphas
+        TestPositive( Alphas );
+        TestPositive( alphakTilde );
+    end
 
     %Step2
-    if Abbruchkriterium814()
+    if Abbruchkriterium814(breakCondition)
         outcome = 0;
-        tk = 0;
-        vTauJ = 0;
-        dTauJ = 0;
+        tk = tauJ;
         alphakPlus = 0;
         break;
     end
@@ -63,6 +70,10 @@ while j < maxIter
         break;
     end
     
+    if outputPropertiesObj.indicateNegativeAlphas
+        TestPositive( alphakPlus );
+    end
+    
     %Step6 tauJ was too big, lower it
     tauRight = tauJ;
     tauJ = Interpol(tauLeft, tauRight, parameterObject.gammaI);
@@ -73,9 +84,24 @@ end
 if outputPropertiesObj.innerIteration
     fprintf('Innere Iteration nach %d Iterationen mit %.3e TrustRegion Parameter verlassen\n', j,tk);
 end
-    function test814 = Abbruchkriterium814()
-        test814 = (alphakTilde <= parameterObject.eta) && (dot(skTilde, skTilde) <= parameterObject.eta*parameterObject.eta);
-    end
+    function test814 = Abbruchkriterium814(breakCondition)
+        switch breakCondition
+            case 'test alpha'
+                test814 = (alphakTilde <= parameterObject.eta) && (dot(skTilde, skTilde) <= parameterObject.eta*parameterObject.eta);
+            case 'test v'
+                test814 = -vTauJ <= parameterObject.eta;
+            otherwise
+                error('Test nicht unterstützt.');
+        end
+        
+        if test814 && outputPropertiesObj.printAnalysis
+           fprintf('\nAbbruch bei eta = %e\n', parameterObject.eta); 
+           fprintf('Funktionswert der Annäherung = %e\n', vTauJ);  
+           fprintf('AlphaTilde = %e\n', alphakTilde); 
+           fprintf('Normquadrat von sTilde = %e\n', dot(skTilde, skTilde)); 
+           fprintf('Letzter Trust Region Parameter = %e\n\n', tauJ); 
+        end
+     end
 
     function test815 = Abstiegsbedingung815()
         test815 =  fxd - fx< parameterObject.m1 * vTauJ;

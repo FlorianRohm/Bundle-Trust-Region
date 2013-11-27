@@ -1,4 +1,4 @@
-function [v, d, beta] = solveDP(t, Bundle, Alphas, tol)
+function [v, d, beta] = solveDP(t, Bundle, Alphas, tol, round)
     dimensionOfBeta = length(Alphas);
     A = [];
     b = [];
@@ -12,8 +12,13 @@ function [v, d, beta] = solveDP(t, Bundle, Alphas, tol)
     
     options = optimoptions('fmincon','Algorithm','active-set', 'TolCon', tol, 'TolFun', tol, 'Display', 'off');
     beta = fmincon(@QP_Problem, startValue, A, b, Aeq, beq, lb, ub, [], options);
-   
-    %Convert to solution of QP
+    if round
+        beta = max (beta,0);
+        if sum(beta)>0
+            beta = beta / sum(beta);
+        end
+    end
+    %Convert to solution of DP
     sBeta = Bundle * beta;
     
     d = -t*sBeta;

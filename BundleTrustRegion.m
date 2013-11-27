@@ -20,7 +20,7 @@ Alphas = 0;
 skTildeMinus1 = s1;
 alphakTildeMinus1 = 0;
 xk = functionObject.startPoint;
-maxIter = 300;
+maxIter = parameterObject.maxIter;
 
 if parameterObject.manualTk == 0
     [ tk, xPlus, sPlus, alphaPlus, outcome, fxdMinusfx ] = ...
@@ -55,6 +55,9 @@ while k < maxIter
         Verfahren842( functionObject, xk, tk, Bundle, Alphas, skTildeMinus1, alphakTildeMinus1, parameterObject, outputPropertiesObj );
     if outcome == 0
         xStar = xk;
+        k = k+1;
+        Xs(:,k) = xk;
+        FXs(1,k) = fx;
         break;
     end
     
@@ -73,7 +76,12 @@ while k < maxIter
     %update Bundle
     [ Bundle, Alphas ] = ...
         UpdateBundleFull(Bundle, Alphas, outcome, parameterObject, fxdMinusfx, dt, skTilde, alphakTilde, skPlus, alphakPlus);
+    
+   if outputPropertiesObj.indicateNegativeAlphas
+        TestPositive( Alphas );
+   end
 
+    
     xk = xkPlus;
     skTildeMinus1 = skTilde;
     alphakTildeMinus1 = alphakTilde;

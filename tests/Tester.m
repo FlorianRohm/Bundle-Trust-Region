@@ -1,10 +1,10 @@
-function [Xs,FXs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistoryFiber, errorHistoryValue, funcCalls, subgradCalls] = ...
+function [Xs, FXs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistoryFiber, errorHistoryValue, funcCalls, subgradCalls] = ...
     Tester( functionObject, parameterObject , outputPropertiesObj)
 %Tester Tests the given function with Bundle Trust Region
 %functions should increment functionCalls Variable
 
 if outputPropertiesObj.header
-    fprintf('------------------- Untersuche Funktion: %s -------------------\n\n',functionObject.name);
+    fprintf('-------------------%s - Untersuche Funktion: %s -------------------\n\n',outputPropertiesObj.prelabelPlots,functionObject.name);
 end
 [xStar, Xs,FXs, advanceSteps, nullSteps] = BundleTrustRegion(functionObject, parameterObject, outputPropertiesObj);
 
@@ -37,12 +37,12 @@ if outputPropertiesObj.printAnalysis
 end
 
 if outputPropertiesObj.errorInFiber
-    figure('Name',['Fehlerverlauf im Urbild bei ', functionObject.name],'NumberTitle','off')
+    figure('Name',[outputPropertiesObj.prelabelPlots,' ','Fehlerverlauf im Urbild bei ', functionObject.name],'NumberTitle','off')
     semilogy(errorHistoryFiber,'-*');
 end
 
 if outputPropertiesObj.errorInValue
-    figure('Name',['Fehlerverlauf der Funktionswerte bei ', functionObject.name],'NumberTitle','off')
+    figure('Name',[outputPropertiesObj.prelabelPlots,' ','Fehlerverlauf der Funktionswerte bei ', functionObject.name],'NumberTitle','off')
     semilogy(errorHistoryValue,'-*');
 end
 

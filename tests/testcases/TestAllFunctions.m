@@ -1,6 +1,6 @@
 clc
 clear
-%close all;
+close all;
 
 parameterObj1 = Parameters;
 parameterObj1.m1 = 0.1;
@@ -12,8 +12,10 @@ parameterObj1.gammaI = 0.1;
 parameterObj1.thresholdT = 0.1;
 parameterObj1.maxBundleSize = 12;
 parameterObj1.manualTk = 0; %0 for linesearch 
-parameterObj1.bundleUpdate = 'fifo'; 
-%available: 'fifo', 'largest error'
+parameterObj1.bundleUpdate = 'largest error'; 
+%available: 'fifo', 'largest error', 'random'
+parameterObj1.breakCondition ='test v';
+parameterObj1.maxIter = 500;
 
 outputProperties = OutputProperties;
 outputProperties.printConsecutive = true;
@@ -35,10 +37,14 @@ end
 
 
 
-%---------------2D Section----------------
-[meshX,meshY] = meshgrid(0:0.01:2.5,-0.5:0.01:1.5);
-cb2 = CB2;
-Tester2D( cb2, parameterObj1, meshX, meshY, outputProperties );
+% %---------------2D Section----------------
+% [meshX,meshY] = meshgrid(0:0.01:2.5,-0.5:0.01:1.5);
+% cb2 = CB2;
+% Tester2D( cb2, parameterObj1, meshX, meshY, outputProperties );
+% 
+% [meshX,meshY] = meshgrid(-10:0.5:30,-30:0.5:10);
+% goffin2 = Goffin2;
+% Tester2D( goffin2, parameterObj1, meshX, meshY, outputProperties );
 
 [meshX,meshY] = meshgrid(-1.6:0.1:6,-5:0.1:5);
 wolfe = Wolfe;

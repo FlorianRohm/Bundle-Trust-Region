@@ -10,6 +10,8 @@ classdef OutputProperties < handle
         innerIteration = false;
         preMainLoop = true;
         header = true;
+        prelabelPlots = '';
+        indicateNegativeAlphas = true;
     end
     methods
         function allFalse(this)
@@ -22,6 +24,7 @@ classdef OutputProperties < handle
             this.innerIteration = false;
             this.preMainLoop = false;
             this.header = false;
+            this.indicateNegativeAlphas = false;
         end
         function allTrue(this)
             this.plot2D = true;
@@ -33,6 +36,15 @@ classdef OutputProperties < handle
             this.innerIteration = true;
             this.preMainLoop = true;
             this.header = true;
+            this.indicateNegativeAlphas = true;
+        end
+        function new = copy(this)
+            new = feval(class(this));
+            
+            p = properties(this);
+            for i = 1:length(p);
+                new.(p{i}) =  this.(p{i});
+            end
         end
     end
 end
