@@ -10,7 +10,7 @@ parameterObj1.eta = 1e-6;
 parameterObj1.T = 3; %max{ 0.1(fx1-fopt),1}
 parameterObj1.gammaI = 0.1;
 parameterObj1.thresholdT = 0.1;
-parameterObj1.maxBundleSize = 12;
+parameterObj1.maxBundleSize = 15;
 parameterObj1.manualTk = 0; %0 for linesearch 
 parameterObj1.bundleUpdate = 'largest error'; 
 %available: 'fifo', 'largest error', 'random'

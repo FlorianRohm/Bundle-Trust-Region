@@ -1,6 +1,6 @@
 clc
 clear
-close all;
+% close all;
 
 baseParam = Parameters;
 baseParam.maxBundleSize = 20;
@@ -25,32 +25,32 @@ end
 
 exact = true;
 round = true;
-% %---------------2D Section----------------
+
 
 % goffin2 = Goffin2;
 % BundleUpdateTestForFunction(goffin2, baseParam, exact, round);
 
-% cb2 = CB2;
-% BundleUpdateTestForFunction(cb2, baseParam, exact, round);
-% 
-% wolfe = Wolfe;
-% BundleUpdateTestForFunction(wolfe, baseParam, exact, round);
-% 
-% rosenSuzuki = RosenSuzuki;
-% BundleUpdateTestForFunction(rosenSuzuki, baseParam, exact, round);
-% 
-% maxq20 = Maxq20;
-% BundleUpdateTestForFunction(maxq20, baseParam, exact, round);
-% 
-% maxl20 = Maxl20;
-% BundleUpdateTestForFunction(maxl20, baseParam, exact, round);
-% 
-% hilbert50 = Hilbert50;
-% BundleUpdateTestForFunction(hilbert50, baseParam, exact, round);
+cb2 = CB2;
+BundleUpdateTestForFunction(cb2, baseParam, exact, round);
 
-goffin50 = Goffin50;
-BundleUpdateTestForFunction(goffin50, baseParam, exact, round);
+wolfe = Wolfe;
+BundleUpdateTestForFunction(wolfe, baseParam, exact, round);
 
+rosenSuzuki = RosenSuzuki;
+BundleUpdateTestForFunction(rosenSuzuki, baseParam, exact, round);
+
+maxq20 = Maxq20;
+BundleUpdateTestForFunction(maxq20, baseParam, exact, round);
+
+maxl20 = Maxl20;
+BundleUpdateTestForFunction(maxl20, baseParam, exact, round);
+
+hilbert50 = Hilbert50;
+BundleUpdateTestForFunction(hilbert50, baseParam, exact, round);
+
+% goffin50 = Goffin50;
+% BundleUpdateTestForFunction(goffin50, baseParam, exact, round);
+% 
 
 
 

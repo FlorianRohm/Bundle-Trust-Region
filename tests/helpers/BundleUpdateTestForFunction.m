@@ -12,8 +12,8 @@ paramWithRandom.bundleUpdate = 'random';
 
 outputProperties = OutputProperties;
 outputProperties.allFalse();
-outputProperties.printConsecutive = true;
-outputProperties.indicateNegativeAlphas = true;
+outputProperties.printConsecutive = false;
+outputProperties.indicateNegativeAlphas = false;
 
 
 

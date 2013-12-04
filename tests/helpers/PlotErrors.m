@@ -10,7 +10,7 @@ semilogy(le,'-b+');
 semilogy(r_le,'-bo');
 semilogy(ru,'-r+');
 semilogy(r_ru,'-ro');
-legend('FiFo', 'Fifo mit Rundung','Largest Error','Largest Error mit Rundung','Random','Random mit Rundung','Location','NorthEast')
+legend('FiFo', 'FiFo mit Rundung','Größter Fehler','Größter Fehler mit Rundung','Random','Random mit Rundung','Location','NorthEast')
 hold off;
 
 end
