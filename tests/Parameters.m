@@ -15,7 +15,7 @@ classdef Parameters < handle
         breakCondition = 'test v'
         %available: 'test v', 'test alpha'
         auxTol = 1e-8;
-        auxRound = false;
+        auxRound = true;
         maxIter = 200;
         minimalTrustRegion = 0;
     end   

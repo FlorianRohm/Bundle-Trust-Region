@@ -8,8 +8,8 @@ baseParameters.bundleUpdate = 'largest error';
 %set Up Bundle sizes
 baseParameters.maxBundleSize = 15;
 
-rangeOfM2 = linspace(baseParameters.m1, 0.99 , 15);
-rangeOfM3 = linspace(0.01,0.99,15);
+rangeOfM2 = linspace(0.001, 0.999 , 10);
+rangeOfM3 = linspace(0.001,0.999,10);
 % or: rangeOfM2(rangeOfM2 < baseParameters.m1) = [];
 
 outputProperties = OutputProperties;
@@ -36,6 +36,14 @@ end
 % CB2, Wolfe, RosenSuzuki, Maxq20, Maxl20, Hilbert50, Goffin50
 TestFunction = RosenSuzuki;
 
+
+m1 = baseParameters.m1;
+rangeOfM2 = rangeOfM2(rangeOfM2>=m1);
+funcCalls = zeros(length(rangeOfM2),length(rangeOfM3));
+subgradCalls = zeros(length(rangeOfM2),length(rangeOfM3));
+nulls = zeros(length(rangeOfM2),length(rangeOfM3));
+advancers = zeros(length(rangeOfM2),length(rangeOfM3));
+
 %Iterate the Parameters
 %needs a default profile with >7 possible workers
 c = parcluster;
@@ -44,55 +52,59 @@ for i = 1:length(rangeOfM2)
     m2 = rangeOfM2(i);
     parfor j = 1:length(rangeOfM3)
         m3 = rangeOfM3(j);
-        fprintf('Starte: m2 =  %.3f, m3 = %.3f \n', m2,m3);
-        
-        currentParameter = baseParameters;
-        currentParameter.m2 = m2;
-        currentParameter.m3 = m3;
-        
-        [Xs, FXs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistoryFiber, errorHistoryValue, funcCall, subgradCall] = ...
-            Tester ( TestFunction, currentParameter, outputProperties);
-   
-        funcCalls(i,j) = funcCall;
-        subgradCalls(i,j) = subgradCall;
-        nulls(i,j) = nullSteps;
-        advancers(i,j) = advanceSteps;
+        if(m2>=m1)
+            fprintf('Starte: m2 =  %.3f, m3 = %.3f \n', m2,m3);
+
+            currentParameter = baseParameters;
+            currentParameter.m2 = m2;
+            currentParameter.m3 = m3;
+
+            [Xs, FXs, xStar, advanceSteps, nullSteps, error, errorValue, errorHistoryFiber, errorHistoryValue, funcCall, subgradCall] = ...
+                Tester ( TestFunction, currentParameter, outputProperties);
+
+            funcCalls(i,j) = funcCall;
+            subgradCalls(i,j) = subgradCall;
+            nulls(i,j) = nullSteps;
+            advancers(i,j) = advanceSteps;
+        end
     end
 end
 matlabpool close;
 
 %plotting Section
+ratio = advancers ./ nulls;
+ratio(isnan(ratio)) = 0;
+
 figure('Name', 'Funktionsaufrufe', 'NumberTitle','off');
-bar3(funcCalls);
+bar3c(funcCalls');
 xlabel('m2');
 ylabel('m3');
-set(gca,'XTickLabel',rangeOfM2)
-set(gca,'YTickLabel',rangeOfM3)
+set(gca,'Xtick',1:length(rangeOfM2),'XTickLabel',rangeOfM2)
+set(gca,'Ytick',1:length(rangeOfM3),'YTickLabel',rangeOfM3)
 
 figure('Name', 'Nullschritte', 'NumberTitle','off');
-bar3(nulls);
+bar3c(nulls');
 xlabel('m2');
 ylabel('m3');
-set(gca,'XTickLabel',rangeOfM2)
-set(gca,'YTickLabel',rangeOfM3)
+set(gca,'Xtick',1:length(rangeOfM2),'XTickLabel',rangeOfM2)
+set(gca,'Ytick',1:length(rangeOfM3),'YTickLabel',rangeOfM3)
 
 
 figure('Name', 'Abstiegsschritte', 'NumberTitle','off');
-bar3(advancers);
+bar3c(advancers');
 xlabel('m2');
 ylabel('m3');
-set(gca,'XTickLabel',rangeOfM2)
-set(gca,'YTickLabel',rangeOfM3)
+set(gca,'Xtick',1:length(rangeOfM2),'XTickLabel',rangeOfM2)
+set(gca,'Ytick',1:length(rangeOfM3),'YTickLabel',rangeOfM3)
 
 
-ratio = advancers ./ nulls;
-ratio(isnan(ratio)) = 0;
 figure('Name', 'Abstiegsschritte pro Nullschritt', 'NumberTitle','off');
-bar3(ratio);
+bar3c(ratio');
 xlabel('m2');
 ylabel('m3');
-set(gca,'XTickLabel',rangeOfM2)
-set(gca,'YTickLabel',rangeOfM3)
+set(gca,'Xtick',1:length(rangeOfM2),'XTickLabel',rangeOfM2)
+set(gca,'Ytick',1:length(rangeOfM3),'YTickLabel',rangeOfM3)
+
 
 
 

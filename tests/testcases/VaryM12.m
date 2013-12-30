@@ -8,8 +8,8 @@ baseParameters.bundleUpdate = 'largest error';
 %set Up Bundle sizes
 baseParameters.maxBundleSize = 15;
 
-rangeOfM1 = linspace(0.001,0.999,20);
-rangeOfM2 = linspace(0.001,0.999,20);
+rangeOfM1 = linspace(0.001,0.999,10);
+rangeOfM2 = linspace(0.001,0.999,5);
 
 outputProperties = OutputProperties;
 outputProperties.allFalse;
@@ -18,7 +18,7 @@ outputProperties.allFalse;
 fprintf('Startparameter:\n');
 
 fprintf('Werte für m1: %s\n', Vector2String(rangeOfM1, '%.3f'));
-fprintf('Werte für m2: %s\n', Vector2String(rangeOfM1, '%.3f'));
+fprintf('Werte für m2: %s\n', Vector2String(rangeOfM2, '%.3f'));
 
 fprintf('m3: %.2f\n', baseParameters.m3);
 fprintf('Abbruchschranke: %.1e\n', baseParameters.eta);
@@ -39,11 +39,18 @@ errorHistoriesFiber = [];
 
 %Iterate the Parameters
 c = parcluster; %needs a default profile with >7 possible workers
-matlabpool(c, 7);
+matlabpool(c, 8);
+
+funcCalls = zeros(length(rangeOfM1),length(rangeOfM2));
+subgradCalls = zeros(length(rangeOfM1),length(rangeOfM2));
+nulls = zeros(length(rangeOfM1),length(rangeOfM2));
+advancers = zeros(length(rangeOfM1),length(rangeOfM2));
+
 for i = 1:length(rangeOfM1)
     m1 = rangeOfM1(i);
-    parfor j = i:length(rangeOfM2)
-        m2 = rangeOfM1(j);
+    parfor j = 1:length(rangeOfM2)
+        m2 = rangeOfM2(j);
+        if(m2>=m1)
         fprintf('Starte: m1 =  %.3f, m2 = %.3f \n', m1,m2);
         
         currentParameter = baseParameters;
@@ -57,40 +64,41 @@ for i = 1:length(rangeOfM1)
         subgradCalls(i,j) = subgradCall;
         nulls(i,j) = nullSteps;
         advancers(i,j) = advanceSteps;
+        end
     end
 end
 matlabpool close;
 
 %plotting Section
 figure('Name', 'Funktionsaufrufe', 'NumberTitle','off');
-bar3(funcCalls);
+bar3c(funcCalls');
 xlabel('m1');
 ylabel('m2');
-set(gca,'XTickLabel',rangeOfM1)
-set(gca,'YTickLabel',rangeOfM2)
+set(gca,'Xtick',1:length(rangeOfM1),'XTickLabel',rangeOfM1)
+set(gca,'Ytick',1:length(rangeOfM2),'YTickLabel',rangeOfM2)
 
 figure('Name', 'Nullschritte', 'NumberTitle','off');
-bar3(nulls);
+bar3c(nulls');
 xlabel('m1');
 ylabel('m2');
-set(gca,'XTickLabel',rangeOfM1)
-set(gca,'YTickLabel',rangeOfM2)
+set(gca,'Xtick',1:length(rangeOfM1),'XTickLabel',rangeOfM1)
+set(gca,'Ytick',1:length(rangeOfM2),'YTickLabel',rangeOfM2)
 
 figure('Name', 'Abstiegsschritte', 'NumberTitle','off');
-bar3(advancers);
+bar3c(advancers');
 xlabel('m1');
 ylabel('m2');
-set(gca,'XTickLabel',rangeOfM1)
-set(gca,'YTickLabel',rangeOfM2)
+set(gca,'Xtick',1:length(rangeOfM1),'XTickLabel',rangeOfM1)
+set(gca,'Ytick',1:length(rangeOfM2),'YTickLabel',rangeOfM2)
 
 ratio = advancers ./ nulls;
 ratio(isnan(ratio)) = 0;
 figure('Name', 'Abstiegsschritte pro Nullschritt', 'NumberTitle','off');
-bar3(ratio);
+bar3c(ratio');
 xlabel('m1');
 ylabel('m2');
-set(gca,'XTickLabel',rangeOfM1)
-set(gca,'YTickLabel',rangeOfM2)
+set(gca,'Xtick',1:length(rangeOfM1),'XTickLabel',rangeOfM1)
+set(gca,'Ytick',1:length(rangeOfM2),'YTickLabel',rangeOfM2)
 
 %---------------Available Functions----------------
 % [meshX,meshY] = meshgrid(0:0.01:2.5,-0.5:0.01:1.5);

@@ -6,19 +6,21 @@ parameterObj1 = Parameters;
 parameterObj1.m1 = 0.1;
 parameterObj1.m2 = 0.2;
 parameterObj1.m3 = 0.1;
-parameterObj1.eta = 1e-6;
+parameterObj1.eta = 1e-4;
 parameterObj1.T = 3; %max{ 0.1(fx1-fopt),1}
 parameterObj1.gammaI = 0.1;
 parameterObj1.thresholdT = 0.1;
-parameterObj1.maxBundleSize = 15;
+parameterObj1.maxBundleSize = 3;
 parameterObj1.manualTk = 0; %0 for linesearch 
 parameterObj1.bundleUpdate = 'largest error'; 
 %available: 'fifo', 'largest error', 'random'
 parameterObj1.breakCondition ='test v';
-parameterObj1.maxIter = 500;
+parameterObj1.maxIter = 1000;
 
 outputProperties = OutputProperties;
 outputProperties.printConsecutive = true;
+outputProperties.showTauJ = true;
+outputProperties.innerIteration = true;
 
 %Ausgabe der Parameter
 fprintf('Startparameter:\n');
@@ -46,17 +48,17 @@ end
 % goffin2 = Goffin2;
 % Tester2D( goffin2, parameterObj1, meshX, meshY, outputProperties );
 
-[meshX,meshY] = meshgrid(-1.6:0.1:6,-5:0.1:5);
-wolfe = Wolfe;
-Tester2D( wolfe, parameterObj1, meshX, meshY, outputProperties );
+% [meshX,meshY] = meshgrid(-1.6:0.1:6,-5:0.1:5);
+% wolfe = Wolfe;
+% Tester2D( wolfe, parameterObj1, meshX, meshY, outputProperties );
 
 % [meshX,meshY] = meshgrid(-1:0.01:2,-1:0.01:3);
 % rosenSuzuki2 = RosenSuzuki2;
 % Tester2D( rosenSuzuki2, parameterObj1, meshX, meshY, outputProperties);
 % 
 % %------------Higher Dimensions------------
-% rosenSuzuki = RosenSuzuki;
-% Tester( rosenSuzuki, parameterObj1, outputProperties);
+rosenSuzuki = RosenSuzuki;
+Tester( rosenSuzuki, parameterObj1, outputProperties);
 % 
 % maxq20 = Maxq20;
 % Tester(maxq20, parameterObj1, outputProperties);
