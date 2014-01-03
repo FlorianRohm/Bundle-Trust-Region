@@ -8,8 +8,8 @@ baseParameters.bundleUpdate = 'largest error';
 %set Up Bundle sizes
 baseParameters.maxBundleSize = 15;
 
-rangeOfM2 = linspace(0.001, 0.999 , 10);
-rangeOfM3 = linspace(0.001,0.999,10);
+rangeOfM2 = linspace(0.001, 0.999 , 20);
+rangeOfM3 = linspace(0.001,0.999,20);
 % or: rangeOfM2(rangeOfM2 < baseParameters.m1) = [];
 
 outputProperties = OutputProperties;

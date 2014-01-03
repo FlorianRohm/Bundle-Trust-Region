@@ -8,8 +8,8 @@ baseParameters.bundleUpdate = 'largest error';
 %set Up Bundle sizes
 baseParameters.maxBundleSize = 15;
 
-rangeOfM1 = linspace(0.001,0.999,10);
-rangeOfM2 = linspace(0.001,0.999,5);
+rangeOfM1 = linspace(0.001,0.999,20);
+rangeOfM2 = linspace(0.001,0.999,20);
 
 outputProperties = OutputProperties;
 outputProperties.allFalse;
@@ -33,7 +33,7 @@ end
 
 % set which function to test
 % CB2, Wolfe, RosenSuzuki, Maxq20, Maxl20, Hilbert50, Goffin50
-TestFunction = Hilbert50;
+TestFunction = RosenSuzuki;
 errorHistoriesValue = [];
 errorHistoriesFiber = [];
 
