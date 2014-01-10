@@ -95,16 +95,20 @@ end
         end
         
         if test814 && outputPropertiesObj.printAnalysis
-           fprintf('\nAbbruch bei eta = %e\n', parameterObject.eta); 
+           fprintf(['\nAbbruchbedingung = ', breakCondition, '\n']); 
+           fprintf('Abbruch bei eta = %e\n', parameterObject.eta); 
            fprintf('Funktionswert der Annäherung = %e\n', vTauJ);  
            fprintf('AlphaTilde = %e\n', alphakTilde); 
-           fprintf('Normquadrat von sTilde = %e\n', dot(skTilde, skTilde)); 
-           fprintf('Letzter Trust Region Parameter = %e\n\n', tauJ); 
+           fprintf('Normquadrat von sTilde = %e\n', dot(skTilde, skTilde));  
+           fprintf('letztes v = %e\n', vTauJ); 
+           fprintf('Letzter Trust Region Parameter = %e\n\n', tauJ);  
+           fprintf('Letztes Bundle '); 
+           Bundle
         end
      end
 
     function test815 = Abstiegsbedingung815()
-        test815 =  fxd - fx< parameterObject.m1 * vTauJ;
+        test815 =  fxd - fx < parameterObject.m1 * vTauJ;
     end
     function test817 = Abstiegsbedingung817()
         test817 = (dot(skPlus,dTauJ) >= parameterObject.m2 * vTauJ) || (tauJ >= parameterObject.T - parameterObject.thresholdT)  ;
