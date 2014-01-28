@@ -28,7 +28,7 @@ end
 
 % set which function to test
 % CB2, Wolfe, RosenSuzuki, Maxq20, Maxl20, Hilbert50, Goffin50
-TestFunction = RosenSuzuki;
+TestFunction = Maxq20;
 errorHistoriesValue = [];
 errorHistoriesFiber = [];
 

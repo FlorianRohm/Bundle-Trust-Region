@@ -1,12 +1,12 @@
-classdef  Goffin50 < aFunction
+classdef FiniteLine < a2DFunction
     
     properties (Constant)
-        startPoint = linspace(1,50,50)' - repmat(25.5,50,1);
-        optimalPoint = zeros(50,1);
+        startPoint = [4 ;1.5];
+        optimalPoint = [0;0]; 
         % this function won't produce 
         % right fiber error plots off the shelf
         optimalValue = 0;
-        name = 'Goffin';
+        name = 'finiteLine';
     end
     
     properties(SetAccess = 'private')
@@ -17,7 +17,21 @@ classdef  Goffin50 < aFunction
     methods 
         function value = getValueAt(obj,x)
             obj.functionCalls = obj.functionCalls + 1;
-            value = 50*max(x) - sum(x);
+            
+            y = x(2);
+            x = x(1);
+            
+            mask = (x.^2)>1;
+            value = 10*y.^2;
+            value(mask) = value(mask) + (x(mask).^2)-1;
+        end
+        
+        function value = getValueForPlot(~,x,y)
+        
+            
+            mask = (x.^2)>1;
+            value = 10*y.^2;
+            value(mask) = value(mask) + (x(mask).^2)-1;
         end
         
         function value = getSubgradientAt(obj, x)

@@ -69,6 +69,7 @@ if tooMuch >= 1
     switch update
         case 'largest error'
            AValidToDelete = Alphas(1:currentSize);
+           % prevents the deletion of the newly added
            [~,index] = max(AValidToDelete);
            Bundle(:,index) = [];
            Alphas(index) = [];

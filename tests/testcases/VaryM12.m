@@ -32,8 +32,8 @@ else
 end
 
 % set which function to test
-% CB2, Wolfe, RosenSuzuki, Maxq20, Maxl20, Hilbert50, Goffin50
-TestFunction = RosenSuzuki;
+% CB2, Wolfe,, Bathtub, FiniteLine, RosenSuzuki, Maxq20, Maxl20, Hilbert50, Goffin50
+TestFunction = FiniteLine;
 errorHistoriesValue = [];
 errorHistoriesFiber = [];
 

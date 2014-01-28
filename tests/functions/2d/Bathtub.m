@@ -1,12 +1,10 @@
-classdef  Goffin50 < aFunction
+classdef Bathtub < a2DFunction
     
     properties (Constant)
-        startPoint = linspace(1,50,50)' - repmat(25.5,50,1);
-        optimalPoint = zeros(50,1);
-        % this function won't produce 
-        % right fiber error plots off the shelf
+        startPoint = [5 ;2];
+        optimalPoint = [0;0];
         optimalValue = 0;
-        name = 'Goffin';
+        name = 'bathtub';
     end
     
     properties(SetAccess = 'private')
@@ -17,7 +15,20 @@ classdef  Goffin50 < aFunction
     methods 
         function value = getValueAt(obj,x)
             obj.functionCalls = obj.functionCalls + 1;
-            value = 50*max(x) - sum(x);
+            
+            y = x(2);
+            x = x(1);
+            
+            mask = (x.^2 + 10*y.^2)>1;
+            value = zeros(size(x));
+            value(mask) = (sqrt(x(mask).^2+10*y(mask).^2)-1).^2;
+        end
+        
+        function value = getValueForPlot(~,x,y)
+            
+            mask = (x.^2 + 10*y.^2)>1;
+            value = zeros(size(x));
+            value(mask) = (sqrt(x(mask).^2+10*y(mask).^2)-1).^2;
         end
         
         function value = getSubgradientAt(obj, x)
